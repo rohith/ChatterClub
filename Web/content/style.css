@@ -1,0 +1,15 @@
+.scrollable {
+    height: 78vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0 0.5em;
+}
+
+.max-width {
+    max-width: 85%;
+}
+
+.user-icon {
+    float: left;
+    margin: 0.1em 0 0 0 !important;
+}

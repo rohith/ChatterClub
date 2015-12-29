@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta lang="en-us" />
+    <meta name="description" content="Mobile First Responsive Portal for Chatter Club" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="cleartype" content="on" />
+
+    <title>Chatter Club</title>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css" rel="stylesheet" />
+    <link href="content/style.css" rel="stylesheet" />
+</head>
+<body class="pushable">
+    <div id="notification" class="ui fixed top sticky red fluid label transition hidden"></div>
+
+    <div class="ui mobile only inverted left sidebar vertical menu">
+        <div class="item">
+            <div class="ui list">
+                <div class="item">
+                    <span class="username-placeholder ui fluid violet label transition hidden">
+                        <i class="user icon"></i>
+                        <span></span>
+                    </span>
+                </div>
+                <div class="item">
+                    <a class="logout-switch ui fluid red label transition hidden" onclick="Hub.stopHub()">
+                        <i class="sign out icon"></i> Get Me Out
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ko if: users().length < 1 -->
+        <div class="disabled item">
+            No Users Online
+        </div>
+        <!-- /ko -->
+        <!-- ko foreach: users -->
+        <a class="item" data-bind="attr: { 'data-id': email }, css: { 'active blue header': $parent.activeUser() === email } ">
+            <span class="ui small red label" data-bind="text: unread(), visible: unread() > 0"></span>
+            <span class="content" data-bind="text: username"></span>
+        </a>
+        <!-- /ko -->
+    </div>
+
+    <div class="pusher">
+        <div id="stop" class="transition hidden">
+            <div class="ui center aligned red segment container">
+                <h3 class="header">
+                    Dude, were you living in a cave ?
+                </h3>
+                <h4 class="header">
+                    Your browser is way past its lifetime
+                    <br />
+                    It's time to update it or kill it
+                </h4>
+            </div>
+        </div>
+
+        <div id="continue">
+            <header>
+                <!-- Add container class for padding in-line with the chat interface -->
+                <div class="ui mobile only two column grid">
+                    <div class="four wide column">
+                        <a class="toggle-menu item">
+                            <i class="bordered inverted sidebar icon"></i>
+                        </a>
+                    </div>
+                    <div class="right aligned middle aligned twelve wide column">
+                        <h3>
+                            Chatter Club <sup class="ui right floated green circular label" data-bind="text: users().length + 1, visible: users().length > 0"></sup>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="ui tablet only computer only three column grid container">
+                    <div class="left aligned column">
+                        <span class="username-placeholder ui violet label transition hidden">
+                            <i class="user icon"></i>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div class="center aligned column">
+                        <h3>
+                            Chatter Club <sup class="ui right floated green circular label" data-bind="text: users().length + 1, visible: users().length > 0"></sup>
+                        </h3>
+                    </div>
+                    <div class="right aligned column">
+                        <a class="logout-switch ui red label transition hidden" onclick="Hub.stopHub()">
+                            <i class="sign out icon"></i> Get Me Out
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <main role="main">
+                <section id="entry">
+                    <div class="ui three column center aligned stackable grid">
+                        <div class="column">
+                            <div id="user">
+                                <form class="ui fluid blue form segment">
+                                    <div class="field">
+                                        <input type="text" name="username" placeholder="Username" maxlength="15" />
+                                    </div>
+                                    <div class="field">
+                                        <input type="email" name="email" placeholder="E-mail Address" />
+                                    </div>
+                                    <button class="ui fluid blue button">Get Started</button>
+                                    <div class="ui error message"></div>
+                                </form>
+                            </div>
+                            <div id="verify" class="transition hidden">
+                                <form class="ui fluid green form segment">
+                                    <div class="field">
+                                        <input type="text" name="code" placeholder="Authentication Code" maxlength="10" autocomplete="off" />
+                                    </div>
+                                    <button class="ui fluid green button">Authenticate</button>
+                                    <div class="ui error message"></div>
+                                </form>
+                            </div>
+                            <div id="errors" class="ui error message transition hidden">
+                                <div class="header">You're Not Getting In</div>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="home" class="transition hidden">
+                    <div class="ui doubling stackable grid container">
+                        <div class="four wide tablet only four wide computer only column scrollable">
+                            <div id="users" class="ui small vertical fluid menu">
+                                <!-- ko if: users().length < 1 -->
+                                <div class="disabled item">
+                                    No Users Online
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko foreach: users -->
+                                <a class="item" data-bind="attr: { 'data-id': email }, css: { 'active blue header': $parent.activeUser() === email } ">
+                                    <span class="ui small red label" data-bind="text: unread(), visible: unread() > 0"></span>
+                                    <span class="content" data-bind="text: username"></span>
+                                </a>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+
+                        <div id="chats" class="sixteen wide mobile twelve wide tablet twelve wide computer stretched column scrollable">
+                            <!-- ko if: activeUser() === "" -->
+                            <h3 class="ui disabled center aligned header">
+                                No Active Chats
+                            </h3>
+                            <!-- /ko -->
+                            <!-- ko foreach: users -->
+                            <div class="ui relaxed large list" data-bind="foreach: chatSession, attr: { 'data-id': email }, visible: $parent.activeUser() === email">
+                                <div class="item">
+                                    <div class="content max-width" data-bind="css: isReceived ? 'right floated' : 'left floated'">
+                                        <div class="ui raised segment" data-bind="css: isReceived ? 'blue' : 'grey'">
+                                            <div class="ui large label" data-bind="css: isReceived ? 'blue right ribbon' : 'grey ribbon'">
+                                                <span data-bind="text: isReceived ? $parent.username : $root.username "></span>
+                                                <span class="ui inverted grey small sub header" data-bind="text: timeStamp"></span>
+                                            </div>
+                                            <p data-bind="text: message"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+
+                        <div id="actions" class="sixteen wide column">
+                            <div class="ui fluid action input">
+                                <input id="message" type="text" placeholder="Your message..." data-bind="attr: { 'disabled': activeUser() === '' ? '' : null }" />
+                                <button class="ui blue labeled icon button" data-bind="attr: { 'disabled': activeUser() === '' ? '' : null }">
+                                    <i class="send icon"></i>
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <div class="ui text center aligned container">
+                    <div class="ui basic segment">
+                        <h4 class="ui sub header">
+                            View the source code @ <a target="_blank" href="https://github.com/RohithKumbharkar/ChatterClub">GitHub</a>
+                        </h4>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/signalr.js/2.2.0/jquery.signalR.min.js"></script>
+    <script src="signalr/hubs"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <script src="content/script.js"></script>
+</body>
+</html>

@@ -213,3 +213,6 @@ ModelManifest.xml
 
 # ChatterClub List
 *.pubxml
+Mailbox.config
+Connections.config
+Settings.config
